@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { CreateProjectCommand } from './commands/create-project';
 import { RegisterRhinoCommand } from './commands/register-rhino';
+import { StaticCodeAnalysis } from './extensions/static-code-analysis';
 import { Utilities } from './extensions/utilities';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -9,10 +10,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// register
 	new CreateProjectCommand(context).register();
+
 	registerCommand.register();
 	registerCommand.invokeCommand();
 	let logger = registerCommand.getRhinoLogger();
 	logger.show();
+	new StaticCodeAnalysis(context).register();
 	logger.appendLine(`${Utilities.getTimestamp()} - Rhino Support Extension started.`);
 }
 

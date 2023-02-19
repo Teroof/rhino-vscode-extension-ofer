@@ -17,11 +17,11 @@ import { LoggerConfig } from '../rhino/manifest-models';
 import { ReportManager } from '../rhino/report-manager';
 import { Command } from "./command";
 
-let testRunLogger: RhinoLogger | undefined;
 export class InvokeTestCaseCommand extends Command {
     // members
     private testCases: string[];
     private loggerConfig: LoggerConfig | undefined;
+    private testRunLogger: RhinoLogger | undefined;
 
     /**
      * Summary. Creates a new instance of VS Command for Rhino API.
@@ -48,12 +48,12 @@ export class InvokeTestCaseCommand extends Command {
     private createLogger() {
         this.setLoggerConfig();
         let loggerOptions = this.extractLoggerOptions();
-        if (!testRunLogger) {
-            console.info('Creating new Test Run Log');
-            testRunLogger = new RhinoLogger("Test Run Log", loggerOptions);
+        if (!this.testRunLogger) {
+            
+            this.testRunLogger = new RhinoLogger("Test Run Log", loggerOptions);
         }
         else{
-            testRunLogger.setLoggerOptions(loggerOptions);
+            this.testRunLogger.setLoggerOptions(loggerOptions);
         }
     }
 
@@ -168,10 +168,10 @@ export class InvokeTestCaseCommand extends Command {
      */
     private async displayRunLog(stopCondition: (...args: any) => boolean, testId: string, interval?: number): Promise<void> {
         this.createLogger();
-        if (!testRunLogger) {
+        if (!this.testRunLogger) {
             throw new Error(`No test run logger created!`);
         }
-        let logger = testRunLogger;
+        let logger = this.testRunLogger;
         logger.show();
 
         logger.appendLine(`\n----------------------------------------\n${Utilities.getTimestamp()} - ${testId}: Test run started.\n----------------------------------------\n`);
